@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>E-Contact System: one tap in an emergency</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{--bg:#fbf8f6;--surface:#fff;--ink:#14213d;--muted:#55607a;--line:#e3dcd7;--red:#c8102e;--red-ink:#fff;--soft:#fde8ea;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1220;--surface:#161d31;--ink:#eef1f8;--muted:#a3adc4;--line:#2a3452;--red:#ff4b62;--red-ink:#14060a;--soft:#2b1620}}
+:root[data-theme="dark"]{--bg:#0d1220;--surface:#161d31;--ink:#eef1f8;--muted:#a3adc4;--line:#2a3452;--red:#ff4b62;--red-ink:#14060a;--soft:#2b1620}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.6 "Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.brand{font-weight:700;font-size:1.15rem;text-decoration:none}
+.brand b{color:var(--red)}
+nav a{margin-left:18px;text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:36px 0 64px}
+h1{font-size:clamp(2.2rem,5.5vw,3.6rem);line-height:1.05;margin:0 0 18px;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,3.2vw,2rem);margin:0 0 8px;letter-spacing:-.01em}
+.lead{color:var(--muted);max-width:52ch;margin:0 0 22px}
+.btn{display:inline-block;border:2px solid var(--ink);background:transparent;color:var(--ink);padding:11px 20px;border-radius:10px;font:700 1rem inherit;font-family:inherit;text-decoration:none;cursor:pointer}
+.btn.red{background:var(--red);border-color:var(--red);color:var(--red-ink)}
+.sos-box{text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:30px 20px}
+.sos{width:210px;height:210px;border-radius:50%;border:0;background:var(--red);color:var(--red-ink);font:700 2.6rem inherit;font-family:inherit;cursor:pointer;box-shadow:0 0 0 14px var(--soft);transition:transform .12s}
+.sos:active{transform:scale(.95)}
+.sos small{display:block;font-size:.85rem;font-weight:400;margin-top:2px}
+.status{min-height:3.2em;margin:22px 0 0;color:var(--muted)}
+.status strong{color:var(--ink)}
+section{padding:56px 0;border-top:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:26px}
+.svc{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:12px;padding:18px}
+.svc:hover{border-color:var(--c)}
+.svc .n{font-weight:700;font-size:1.15rem}
+.svc .num{font-size:1.9rem;font-weight:700;color:var(--c);line-height:1.2}
+.svc p{margin:4px 0 0;color:var(--muted);font-size:.95rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px}
+label{display:block;font-weight:700;margin:12px 0 4px}
+input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+ul.contacts{list-style:none;padding:0;margin:18px 0 0}
+ul.contacts li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+ul.contacts button{background:none;border:0;color:var(--red);font:inherit;cursor:pointer;text-decoration:underline}
+.empty{color:var(--muted);margin:18px 0 0}
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-top:12px}
+summary{font-weight:700;cursor:pointer}
+details p,details ol{margin:10px 0 0;color:var(--muted)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:24px;counter-reset:s;padding:0;list-style:none}
+.steps li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+.steps li::before{content:counter(s);display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--red);color:var(--red-ink);font-weight:700;margin-bottom:8px}
+footer{border-top:1px solid var(--line);padding:28px 0 36px;color:var(--muted);font-size:.95rem}
+@media (max-width:760px){.hero,.two{grid-template-columns:1fr}nav{display:none}.sos{width:180px;height:180px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.hr{display:flex;align-items:center}.lang{padding:6px 14px;margin-left:16px}
+select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:100px;resize:vertical}
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:24px 0}
+.av{width:56px;height:56px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:1.5rem;margin-bottom:10px}
+ol.in{padding-left:20px;margin:10px 0 0;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="brand" href="#top">E-<b>Contact</b></a>
+  <div class="hr"><nav><a href="#services">Services</a><a href="#contacts">My contacts</a><a href="#guide">First steps</a><a href="#finder">Find help</a><a href="#app">Get the app</a><a href="#team">Team</a></nav><button class="btn lang" id="lang" type="button" aria-label="Language">हिन्दी</button></div>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div>
+    <h1>Help is one tap away.</h1>
+    <p class="lead">E-Contact is an Android app that reaches hospitals, fire stations, police, blood banks and ambulances, and alerts the people you trust, in a single touch.</p>
+    <a class="btn red" href="#services">Call a service now</a>
+    <a class="btn" href="#contacts" style="margin-left:8px">Set up my contacts</a>
+  </div>
+  <div class="sos-box">
+    <button class="sos" id="sos" type="button">SOS<small>Tap to alert contacts</small></button>
+    <p class="status" id="status" role="status" aria-live="polite">Add trusted contacts below, then try the button. It opens an SMS to all of them with your location.</p>
+  </div>
+</div>
+
+<section id="services">
+  <h2>Reach rescue workers directly</h2>
+  <p class="lead">Tap a card on your phone to call. Numbers shown are India's national emergency lines; the app lets you save local ones too.</p>
+  <div class="grid">
+    <a class="svc" style="--c:#c8102e" href="tel:112"><div class="n">All emergencies</div><div class="num">112</div><p>Single national number</p></a>
+    <a class="svc" style="--c:#1f6feb" href="tel:100"><div class="n">Police</div><div class="num">100</div><p>Crime, safety, accidents</p></a>
+    <a class="svc" style="--c:#e8590c" href="tel:101"><div class="n">Fire station</div><div class="num">101</div><p>Fire and rescue</p></a>
+    <a class="svc" style="--c:#2b9348" href="tel:102"><div class="n">Ambulance</div><div class="num">102</div><p>Medical transport</p></a>
+    <a class="svc" style="--c:#0b7285" href="tel:108"><div class="n">Hospital</div><div class="num">108</div><p>Emergency medical help</p></a>
+    <div class="svc" style="--c:#9c1c5c"><div class="n">Blood bank</div><div class="num">Saved</div><p>Store your nearest blood bank number in the app</p></div>
+  </div>
+</section>
+
+<section id="contacts">
+  <div class="two">
+    <div>
+      <h2>Your trusted contacts</h2>
+      <p class="lead">These people get your SOS message. Contacts stay in this browser only, as a demo of the app's contact list.</p>
+      <div class="card">
+        <label for="cn">Name</label><input id="cn" autocomplete="name">
+        <label for="cp">Phone number</label><input id="cp" type="tel" autocomplete="tel" placeholder="+91 98765 43210">
+        <p style="margin:14px 0 0"><button class="btn red" id="add" type="button">Save contact</button></p>
+        <p id="err" class="empty" role="alert" style="color:var(--red);margin-top:10px"></p>
+      </div>
+    </div>
+    <div>
+      <h2>Saved</h2>
+      <ul class="contacts" id="list"></ul>
+      <p class="empty" id="empty">No contacts saved yet. Add at least one so SOS has someone to alert.</p>
+    </div>
+  </div>
+</section>
+
+<section id="guide">
+  <h2>What to do in the first minutes</h2>
+  <p class="lead">A simple guideline that helps responders arrive faster. Built into the app as quick-access cards.</p>
+  <details><summary>Medical emergency</summary><ol><li>Call 108 or 102 and give the exact location.</li><li>Check breathing. Begin CPR if the person is unresponsive and not breathing normally.</li><li>Do not move someone with a suspected head or spine injury.</li></ol></details>
+  <details><summary>Fire</summary><ol><li>Get everyone out and stay out. Call 101.</li><li>Stay low under smoke and close doors behind you.</li><li>Never use lifts.</li></ol></details>
+  <details><summary>Crime or personal danger</summary><ol><li>Move to a safe, public place if you can and call 100 or 112.</li><li>Send your live location to your trusted contacts with SOS.</li></ol></details>
+  <details><summary>Need blood urgently</summary><ol><li>Tell the hospital the blood group and units required.</li><li>Call your saved blood bank, then ask family and friends to donate.</li></ol></details>
+</section>
+
+<section id="about">
+  <h2>How E-Contact works</h2>
+  <ol class="steps">
+    <li><strong>Save</strong><br>Add trusted contacts and your local service numbers once.</li>
+    <li><strong>Tap</strong><br>Press SOS or pick a service. No menus to search in a crisis.</li>
+    <li><strong>Alert</strong><br>An SMS with your location goes to every saved contact.</li>
+    <li><strong>Connect</strong><br>One more tap calls the rescue team you need.</li>
+  </ol>
+  <p class="lead" style="margin-top:28px">Our goal is to set a clear guideline that helps Emergency Response Teams save time and lives, and to keep every piece of information you need within reach when it matters.</p>
+</section>
+<section id="finder">
+  <h2>Find help near you</h2>
+  <p class="lead">Pick what you need. Your phone's map opens with the closest results.</p>
+  <div class="card" style="max-width:520px">
+    <label for="ftype">What do you need?</label>
+    <select id="ftype"><option value="hospital">Hospital</option><option value="police station">Police station</option><option value="fire station">Fire station</option><option value="blood bank">Blood bank</option><option value="pharmacy">Pharmacy</option></select>
+    <p style="margin:16px 0 0"><a class="btn red" id="find" target="_blank" rel="noopener" href="https://www.google.com/maps/search/hospital+near+me">Search near my location</a></p>
+  </div>
+</section>
+
+<section id="app">
+  <div class="two">
+    <div>
+      <h2>Get the E-Contact app</h2>
+      <p class="lead">Install the Android app to call services and alert contacts straight from your phone.</p>
+      <p><a class="btn red" id="apk" href="#app">Download APK</a></p>
+      <p class="empty" id="apkmsg" role="status"></p>
+    </div>
+    <div class="card"><strong>Install steps</strong>
+      <ol class="in"><li>Download the APK file to your phone.</li><li>Open it and allow installs from this source when asked.</li><li>Tap Install and open E-Contact.</li><li>Save your contacts and you're ready.</li></ol>
+    </div>
+  </div>
+</section>
+
+<section id="team">
+  <h2>Our team</h2>
+  <p class="lead">The people behind E-Contact. Replace these placeholders with your names and roles.</p>
+  <div class="team">
+    <div class="card"><div class="av">👤</div><strong>Team member</strong><br>Role</div>
+    <div class="card"><div class="av">👤</div><strong>Team member</strong><br>Role</div>
+    <div class="card"><div class="av">👤</div><strong>Team member</strong><br>Role</div>
+    <div class="card"><div class="av">👤</div><strong>Team member</strong><br>Role</div>
+  </div>
+  <div class="card" style="max-width:520px">
+    <h2 style="font-size:1.25rem">Contact us</h2>
+    <label for="tn">Name</label><input id="tn" autocomplete="name">
+    <label for="tm">Message</label><textarea id="tm"></textarea>
+    <p style="margin:14px 0 0"><button class="btn red" id="tsend" type="button">Send message</button></p>
+  </div>
+</section>
+</main>
+
+<footer>E-Contact System, an Android emergency-assistance project. In a real emergency, call your local emergency number first.</footer>
+</div>
+
+<script>
+(function(){
+  var KEY="econtact.contacts",contacts=[];
+  var $=function(i){return document.getElementById(i)};
+  try{contacts=JSON.parse(localStorage.getItem(KEY)||"[]")||[]}catch(e){contacts=[]}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(contacts))}catch(e){}}
+  function render(){
+    var ul=$("list");ul.innerHTML="";
+    contacts.forEach(function(c,i){
+      var li=document.createElement("li"),s=document.createElement("span"),b=document.createElement("button");
+      s.textContent=c.name+" · "+c.phone;b.textContent="Remove";b.type="button";
+      b.onclick=function(){contacts.splice(i,1);save();render()};
+      li.appendChild(s);li.appendChild(b);ul.appendChild(li);
+    });
+    $("empty").style.display=contacts.length?"none":"block";
+    if(typeof applyLang==="function")applyLang();
+  }
+  $("add").onclick=function(){
+    var n=$("cn").value.trim(),p=$("cp").value.trim(),e=$("err");
+    if(!n){e.textContent="Enter a name for this contact.";return}
+    if(p.replace(/\D/g,"").length<7){e.textContent="Enter a valid phone number, at least 7 digits.";return}
+    e.textContent="";contacts.push({name:n,phone:p});save();render();$("cn").value="";$("cp").value="";
+  };
+  function send(loc){
+    var msg="EMERGENCY! I need help. "+(loc?"My location: https://maps.google.com/?q="+loc+" ":"")+"Sent via E-Contact.";
+    var nums=contacts.map(function(c){return c.phone.replace(/[^\d+]/g,"")}).join(",");
+    $("status").innerHTML="<strong>SMS ready for "+contacts.length+" contact"+(contacts.length>1?"s":"")+".</strong> Confirm in your messaging app to send.";
+    window.location.href="sms:"+nums+"?body="+encodeURIComponent(msg);
+  }
+  $("sos").onclick=function(){
+    if(!contacts.length){$("status").innerHTML="<strong>No contacts saved.</strong> Add a trusted contact first, or call 112 now.";return}
+    $("status").textContent="Finding your location…";
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(function(p){send(p.coords.latitude+","+p.coords.longitude)},function(){send("")},{timeout:6000});
+    }else send("");
+  };
+  var APK_URL="",TEAM_EMAIL="team@example.com";
+  $("ftype").onchange=function(){$("find").href="https://www.google.com/maps/search/"+encodeURIComponent(this.value)+"+near+me"};
+  if(APK_URL){$("apk").href=APK_URL;$("apk").setAttribute("download","")}
+  else $("apk").onclick=function(e){e.preventDefault();$("apkmsg").textContent="The APK link is not added yet. Upload your APK and set APK_URL in this page."};
+  $("tsend").onclick=function(){
+    var b="From: "+$("tn").value+"\n\n"+$("tm").value;
+    window.location.href="mailto:"+TEAM_EMAIL+"?subject="+encodeURIComponent("E-Contact enquiry")+"&body="+encodeURIComponent(b);
+  };
+  var HI={"Services":"सेवाएँ","My contacts":"मेरे संपर्क","First steps":"पहले कदम","About":"परिचय","Find help":"मदद खोजें","Get the app":"ऐप पाएँ","Team":"टीम",
+"Help is one tap away.":"मदद बस एक टैप दूर है।",
+"E-Contact is an Android app that reaches hospitals, fire stations, police, blood banks and ambulances, and alerts the people you trust, in a single touch.":"ई-कॉन्टैक्ट एक एंड्रॉइड ऐप है जो अस्पताल, दमकल केंद्र, पुलिस, ब्लड बैंक और एम्बुलेंस तक पहुँचाता है, और एक ही टच में आपके भरोसेमंद लोगों को सूचित करता है।",
+"Call a service now":"अभी सेवा को कॉल करें","Set up my contacts":"मेरे संपर्क जोड़ें","Tap to alert contacts":"संपर्कों को अलर्ट करने के लिए टैप करें",
+"Add trusted contacts below, then try the button. It opens an SMS to all of them with your location.":"नीचे भरोसेमंद संपर्क जोड़ें, फिर बटन दबाएँ। यह सभी को आपकी लोकेशन के साथ SMS खोलता है।",
+"Reach rescue workers directly":"बचाव दल से सीधे संपर्क करें",
+"Tap a card on your phone to call. Numbers shown are India's national emergency lines; the app lets you save local ones too.":"कॉल करने के लिए फ़ोन पर कार्ड टैप करें। यहाँ भारत की राष्ट्रीय आपातकालीन लाइनें हैं; ऐप में आप स्थानीय नंबर भी सहेज सकते हैं।",
+"All emergencies":"सभी आपात स्थितियाँ","Single national number":"एक राष्ट्रीय नंबर","Police":"पुलिस","Crime, safety, accidents":"अपराध, सुरक्षा, दुर्घटना","Fire station":"दमकल केंद्र","Fire and rescue":"आग और बचाव","Ambulance":"एम्बुलेंस","Medical transport":"चिकित्सा परिवहन","Hospital":"अस्पताल","Emergency medical help":"आपातकालीन चिकित्सा सहायता","Blood bank":"ब्लड बैंक","Saved":"सहेजे गए","Store your nearest blood bank number in the app":"अपने नज़दीकी ब्लड बैंक का नंबर ऐप में सहेजें",
+"Your trusted contacts":"आपके भरोसेमंद संपर्क","These people get your SOS message. Contacts stay in this browser only, as a demo of the app's contact list.":"इन लोगों को आपका SOS संदेश मिलता है। संपर्क केवल इसी ब्राउज़र में रहते हैं, यह ऐप की संपर्क सूची का डेमो है।",
+"Name":"नाम","Phone number":"फ़ोन नंबर","Save contact":"संपर्क सहेजें","Remove":"हटाएँ","No contacts saved yet. Add at least one so SOS has someone to alert.":"अभी कोई संपर्क नहीं है। कम से कम एक जोड़ें ताकि SOS किसी को अलर्ट कर सके।",
+"What to do in the first minutes":"पहले कुछ मिनटों में क्या करें","A simple guideline that helps responders arrive faster. Built into the app as quick-access cards.":"एक सरल मार्गदर्शिका जो बचावकर्मियों को जल्दी पहुँचने में मदद करती है। ऐप में त्वरित कार्ड के रूप में उपलब्ध।",
+"Medical emergency":"चिकित्सा आपातकाल","Fire":"आग","Crime or personal danger":"अपराध या व्यक्तिगत खतरा","Need blood urgently":"तुरंत रक्त चाहिए",
+"Call 108 or 102 and give the exact location.":"108 या 102 पर कॉल करें और सही स्थान बताएँ।","Check breathing. Begin CPR if the person is unresponsive and not breathing normally.":"साँस जाँचें। व्यक्ति प्रतिक्रिया न दे और सामान्य साँस न ले तो CPR शुरू करें।","Do not move someone with a suspected head or spine injury.":"सिर या रीढ़ की चोट का शक हो तो व्यक्ति को न हिलाएँ।",
+"Get everyone out and stay out. Call 101.":"सबको बाहर निकालें और बाहर ही रहें। 101 पर कॉल करें।","Stay low under smoke and close doors behind you.":"धुएँ में झुककर चलें और पीछे के दरवाज़े बंद करते जाएँ।","Never use lifts.":"लिफ़्ट का उपयोग कभी न करें।",
+"Move to a safe, public place if you can and call 100 or 112.":"हो सके तो किसी सुरक्षित, सार्वजनिक जगह जाएँ और 100 या 112 पर कॉल करें।","Send your live location to your trusted contacts with SOS.":"SOS से अपनी लाइव लोकेशन भरोसेमंद संपर्कों को भेजें।",
+"Tell the hospital the blood group and units required.":"अस्पताल को रक्त समूह और ज़रूरी यूनिट बताएँ।","Call your saved blood bank, then ask family and friends to donate.":"सहेजे हुए ब्लड बैंक को कॉल करें, फिर परिवार और दोस्तों से रक्तदान के लिए कहें।",
+"Find help near you":"अपने पास मदद खोजें","Pick what you need. Your phone's map opens with the closest results.":"जो चाहिए चुनें। आपके फ़ोन का मैप सबसे नज़दीकी नतीजों के साथ खुलेगा।","What do you need?":"आपको क्या चाहिए?","Police station":"पुलिस थाना","Pharmacy":"दवा की दुकान","Search near my location":"मेरी लोकेशन के पास खोजें",
+"Get the E-Contact app":"ई-कॉन्टैक्ट ऐप पाएँ","Install the Android app to call services and alert contacts straight from your phone.":"सेवाओं को कॉल करने और संपर्कों को अलर्ट करने के लिए एंड्रॉइड ऐप इंस्टॉल करें।","Download APK":"APK डाउनलोड करें","Install steps":"इंस्टॉल के चरण",
+"Download the APK file to your phone.":"APK फ़ाइल अपने फ़ोन में डाउनलोड करें।","Open it and allow installs from this source when asked.":"उसे खोलें और पूछे जाने पर इस स्रोत से इंस्टॉल की अनुमति दें।","Tap Install and open E-Contact.":"इंस्टॉल दबाएँ और ई-कॉन्टैक्ट खोलें।","Save your contacts and you're ready.":"अपने संपर्क सहेजें, आप तैयार हैं।",
+"Our team":"हमारी टीम","The people behind E-Contact. Replace these placeholders with your names and roles.":"ई-कॉन्टैक्ट के पीछे के लोग। इन प्लेसहोल्डर की जगह अपने नाम और भूमिकाएँ लिखें।","Team member":"टीम सदस्य","Role":"भूमिका","Contact us":"हमसे संपर्क करें","Message":"संदेश","Send message":"संदेश भेजें",
+"How E-Contact works":"ई-कॉन्टैक्ट कैसे काम करता है","Save":"सहेजें","Add trusted contacts and your local service numbers once.":"भरोसेमंद संपर्क और स्थानीय सेवा नंबर एक बार जोड़ें।","Tap":"टैप करें","Press SOS or pick a service. No menus to search in a crisis.":"SOS दबाएँ या कोई सेवा चुनें। संकट में मेनू खोजने की ज़रूरत नहीं।","Alert":"अलर्ट","An SMS with your location goes to every saved contact.":"आपकी लोकेशन के साथ SMS हर सहेजे संपर्क को जाता है।","Connect":"जुड़ें","One more tap calls the rescue team you need.":"एक और टैप से ज़रूरी बचाव दल को कॉल लगता है।",
+"Our goal is to set a clear guideline that helps Emergency Response Teams save time and lives, and to keep every piece of information you need within reach when it matters.":"हमारा लक्ष्य एक स्पष्ट मार्गदर्शिका बनाना है जो आपातकालीन दलों को समय और जान बचाने में मदद करे, और ज़रूरत के समय हर ज़रूरी जानकारी आपकी पहुँच में रखे।",
+"E-Contact System, an Android emergency-assistance project. In a real emergency, call your local emergency number first.":"ई-कॉन्टैक्ट सिस्टम, एक एंड्रॉइड आपातकालीन सहायता परियोजना। असली आपात स्थिति में पहले अपने स्थानीय आपातकालीन नंबर पर कॉल करें।"};
+  var lang="en",orig=new Map();
+  function applyLang(){
+    var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){return n.parentNode.closest("script,#lang")?2:1}}),n,list=[];
+    while((n=w.nextNode()))list.push(n);
+    list.forEach(function(n){
+      if(!orig.has(n))orig.set(n,n.nodeValue);
+      var o=orig.get(n),k=o.trim();
+      if(k)n.nodeValue=(lang==="hi"&&HI[k])?o.replace(k,HI[k]):o;
+    });
+    document.documentElement.lang=lang;
+  }
+  $("lang").onclick=function(){lang=lang==="en"?"hi":"en";this.textContent=lang==="en"?"हिन्दी":"English";applyLang()};
+  render();
+})();
+</script>
+</body>
+</html>
